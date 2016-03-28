@@ -114,7 +114,7 @@
 ; and returns it as a list of pairs: team_name, team_win_loss_ratio.
 (define (teamRatio teamList)
   (map (lambda (t)
-         (list (first t) (/ (second t(+ (second t)(third t))))))
+         (list (first t) (/ (second t) (+ (second t)(third t)))))
        
        teamList
        )
@@ -236,4 +236,33 @@
 ; NOTE: Definitely not doing the note yet
 (define (topThreeScorers teamList)
   (getFirstItems (sortScorers teamList) 3)
+  )
+
+
+(define (tiedTeams? t1 t2)
+  ( = (second t1) (second t2) )
+  )
+
+; expects an ordered list and using the equalsFunction, returns the top elements
+; given that elements can be of the same value, it returns the all elements with
+; the top n values.
+(define (getTop l n)
+  (cond
+    [(> n 0)(cond
+              [(tiedTeams? (first l) (second l)) (cons (first l) (getTop (rest l) n))]
+              [else (cons (first l) (getTop (rest l) (- n 1)))])
+            ]
+    [else empty])
+  )
+
+; Function returns the players with the top 3 scores
+; receives TEAM_SCORES
+(define (topThreeScorersR teamList)
+  (getTop (sortScorers teamList) 3)
+  )
+
+; Returns the teams with the top 3 win/lose ratios
+; receives TEAM_RECORDS
+(define (topThreeTeams teamList)
+  (getTop (sortedTeamRatio teamList) 3)
   )
