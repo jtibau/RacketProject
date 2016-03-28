@@ -110,10 +110,12 @@
    (list 'Leaf 4 5))
   )
 
+; teamRatio(): Calculates the ratio of wins to lossses for each team
+; and returns it as a list of pairs: team_name, team_win_loss_ratio.
 (define (teamRatio teamList)
   (map (lambda (t)
-         (list (first t) (/ (second t) (+ (second t)(third t))))
-         )
+         (list (first t) (/ (second t(+ (second t)(third t))))))
+       
        teamList
        )
   )
@@ -125,10 +127,14 @@
     )
   )
 
+; sortedTeamRatio(): Returns the team_ratio pairs in a list sorted
+; in order by team_ratio, highest to lowest from front of the list.
+; Note if 2 teams have the same team_ratio they must appear next to
+; each other in either order in the returned list.
+; NOTE: The part in the note above has not been implemented
 (define (sortedTeamRatio teamList)
   (sort (teamRatio teamList) compareTeams)
   )
-
 
 ; Helper function receives a list and a number < lenght of the list
 (define (getFirstItems l n)
@@ -138,16 +144,13 @@
     )
   )
 
+; topThree(): Calculates the top three teams in terms of their win_loss_ratios.
+; The return value of this function will be the top three team names in a list
+; in order of highest ratio to lowest.
+; NOTE: Not implemented multiple equal scores
 (define (topThree teamList)
   (getFirstItems (sortedTeamRatio teamList) 3)
   )
-
-(define (average l)
-  (/ (apply + l) (length l))
-  )
-
-; removes the ids from the first team, keeps the score lists
-;(map second (second (first TEAM_SCORES)))
 
 (define (flatten l)
   (cond
@@ -157,11 +160,80 @@
     )
   )
 
+; Helper function for below. Calculates the total number of points
+; for a single team. Receives the pair that describes the team.
 (define (totalPointsOnTeam team)
   (apply + (flatten (map second (second team))  ))
   )
 
-(define (totalPointsOnTeamByName name teamsList)
-  (totalPointsOnTeam (first (filter (lambda (x) (eq? (first x) name)) teamsList)))
+; Helper function
+(define (getTeamByName name teamsList)
+  (first (filter (lambda (x) (eq? (first x) name)) teamsList))
   )
-  
+
+; totalPoints(id): Returns the total number of points scored over the season
+; by players on team id.
+; The actual function must receive the team name and the whole team list.
+(define (totalPointsOnTeamByName name teamsList)
+  (totalPointsOnTeam (getTeamByName name teamsList))
+  )
+
+; Calculates average of a list, should crash on empty list
+(define (average l)
+  (/ (apply + l) (length l))
+  )
+
+; averageScorePerPlayer(): Calculates the average score per player
+; across all teams.
+(define (averageScorePerPlayer teamList)
+  (map 
+   (lambda (team)(
+                  list (first team)
+                       (map (lambda(p)(list (first p)(average (second p)))) (second team))
+                       )
+     )
+   teamList))
+
+; averageScoreTeam(id): Calculates the average of the average scores
+; per player for team id.
+(define (averageScoreTeamByName name teamList)
+  (first (averageScorePerPlayer (list (getTeamByName name teamList))))
+  )
+
+(define (maxElementInList l)
+  (argmax (lambda (x) x) l)
+  )
+
+; maxScore(): Returns a list of pairs of player name and his/her max score for the season.
+; NOTE: Are the team names expected to remain in the list
+; Currently the team names are still in the list
+(define (maxScore teamList)
+  (map 
+   (lambda (team)(
+                  list (first team)
+                       (map (lambda(p)(list (first p)(maxElementInList (second p)))) (second team))
+                       )
+     )
+   teamList))
+
+; Helper function
+(define (flattenOneLevel l)
+  (foldr append empty l)
+  )
+
+; Consider renaming "compareTeams" function to "compareBasedOnSecond"
+(define (sortScorers teamList)
+  (sort (flattenOneLevel (map (lambda (x) (second x)) (maxScore teamList))) compareTeams)
+  )
+
+; topThreeScorers(): Returns a list of the players obtaining one of
+; the top 3 scores across all the teams.
+; Note: What if there are several players with the same top score,
+; the same 2nd to the top score etc. What should this function return? 
+; The function needs to calculate the top 3 scores from all the scores
+; in all the teams, and then it needs to identify all players who had one
+; of those scores and put each of them into the final list returned.
+; NOTE: Definitely not doing the note yet
+(define (topThreeScorers teamList)
+  (getFirstItems (sortScorers teamList) 3)
+  )
