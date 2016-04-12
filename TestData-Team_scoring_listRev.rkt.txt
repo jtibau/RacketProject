@@ -1,0 +1,112 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname TestData-Team_scoring_listRev) (read-case-sensitive #t) (teachpacks ((lib "docs.rkt" "teachpack" "htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "docs.rkt" "teachpack" "htdp")) #f)))
+;Input type 2 (Team_scoring_list):
+;      test case 1:
+;       "normal" test case: only one team and each player has a distinct max score
+;	input list
+ ( (cardinals (mary (2 14)) (james (10 2 3)) (alam (8 7 9)) ) )
+;	output of totalPoints(cardinals)
+   55
+;	output of averageScorePerPlayer
+   6.88
+;	output of averageScoreTeam(cardinals)
+   7.00
+;	output of maxScore
+ ((mary 14) (james 10) (alam 9))
+;	output of topThreeScorers
+ ((mary 14) (james 10) (alam 9))
+	
+;	test case 2:
+;	"normal" test case: two teams, multiple players share same max score
+;	input list
+ ( (cardinals (mary (2 14)) (james (10 2 3)) (alam (8 6 10)) ) (crows (joe (2)) (sue (5 10 15 20)) (frank (7 9))) )
+;	output of totalPoints(crows)
+   68
+;	output of averageScorePerPlayer
+   8.20
+;	output of averageScoreTeam(crows)
+   7.50
+;	output of maxScore
+ ((mary 14) (james 10) (alam 10) (joe 2) (sue 20) (frank 9))
+;	output of topThreeScorers
+ ((sue 20) (mary 14) (james 10) (alam 10))
+	
+;	test case 3:
+; 	"normal" test case: multiple players have same max and second-max score
+;	input list
+ ( (cardinals (mary (2 14)) (james (10 15 3))) (crows (joe (2)) (sue (5 10 15 20)) (frank (5 15))) (villanova (tom (3)) (sally (15 20 18 17)) (ruth (5 15))) (bulls (hardy (4 6)) (john (15 15))) )
+;	output of totalPoints(cardinals)
+   44
+;	output of averageScorePerPlayer
+   10.83
+;	output of averageScoreTeam(cardinals)
+   8.67
+;	output of maxScore
+ ((mary 14) (james 15) (joe 2) (sue 20) (frank 15) (tom 3) (sally 20) (ruth 15) (hardy 6) (john 15))
+;	output of topThreeScorers
+ ( (sue 20) (sally 20) (james 15) (frank 15) (ruth 15) (john 15) (mary 14) )
+		
+;	test case 4:
+;	"normal' test case: multiple players have same max and second-max score
+;	input list
+ ( (cardinals (mary (25 15)) (james (10 2 3)) (alam (8 6 10)) ) (crows (joe (20)) (sue (18 19 21 22)) (frank (7 9))) (villanova (tom (3)) (sally (15 20 18 17)) (ruth (5 15))) (bulls (hardy (4 6)) (john (17 18))) )
+
+;	output of totalPoints(cardinals)
+   79
+;	output of averageScorePerPlayer
+   12.81
+;	output of averageScoreTeam(cardinals)
+   11.00
+;	output of maxScore
+  ((mary 25) (james 10) (alam 10) (joe 20) (sue 22) (frank 9) (tom 3) (sally 20) (ruth 15) (hardy 6) (john 18))
+;	output of topThreeScorers
+  ((mary 25) (sue 22) (joe 20) (sally 20))
+		
+;	test case 5:
+;	special/error test case: only two players, check whether the topThreeScorers() function works
+;	input list
+ ( (cardinals (mary (2 14)) (james (10 15 3))) )
+;	output of totalPoints(cardinals)
+   44
+;	output of averageScorePerPlayer
+   8.80
+;	output of averageScoreTeam(cardinals)
+   8.67
+;	output of maxScore
+ ((mary 14) (james 15))
+;	output of topThreeScorers
+ ((james 15) (mary 14))
+	
+;	test case 6:
+;	special/error test case: all players have score 0, because only one top score of 0.00
+;	have more than 3 players
+;	input list
+ ( (cardinals (mary (0 0)) (james (0 0 0)) (alam (0 0 0)) ) (crows (joe (0)) (sue (0 0 0 0)) (frank (0 0))) )
+;	output of totalPoints(cardinals)
+   0
+;	output of averageScorePerPlayer
+   0.00
+;	output of averageScoreTeam(cardinals)
+   0.00
+;	output of maxScore
+ ((mary 0) (james 0) (alam 0) (joe 0) (sue 0) (frank 0))
+;	output of topThreeScorers
+ ((mary 0) (james 0) (alam 0) (joe 0) (sue 0) (frank 0))
+	
+
+
+; 	test case 7:
+; 	special/error test case: all players have same 2 top scores although have 3 players
+;	input list 
+	( (cardinals (mary (2 14)) (james (10 15 3)) (alam (14 2))) )
+;	output of total points (cardinals)
+	60
+;	output of averageScorePerPlayer
+	8.57
+;	output of averageScoreTeam(cardinals)
+	8.44
+;	output of maxScore
+	( (mary 14) (james 15) (alam 14) )
+;	output of topThreeScorers
+	( (james 15) (mary 14) (alam 14) )
